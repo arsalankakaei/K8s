@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+  labels:
+    app:  wordpress
+spec:
+  selector:
+    matchLabels:
+      app:  wordpress
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app:  wordpress
+        tier: mysql
+    spec:
+      containers:
+        - name: mysql-cont
+          image: mysql_local:1.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mysql-pswd
+          ports:
+            - containerPort: 3306
+              name: mysql-cont
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-vol
+      volumes:
+        - name: mysql-vol
+          emptyDir: {}
+---
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  mysql-db
+  labels:
+    app:  wordpress
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app:  wordpress
+    tier: mysql
+  clusterIP: None
+
+
+---
+
+
+
+            

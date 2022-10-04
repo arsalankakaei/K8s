@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proj-vol
+spec:
+  containers:
+    - name: pv-cont
+      image: busybox_local:1.0
+      args:
+      - sleep 
+      - "3600"
+      volumeMounts:
+        - mountPath: "/projected-volume"
+          name: test-volume
+          readOnly: true
+  volumes:
+    - name: test-volume
+      projected:
+        sources:
+          - secret:
+              name: user
+          - secret:
+              name: pasw
