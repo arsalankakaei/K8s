@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replica
+  labels:
+    app:  guestbook
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+    matchExpressions:
+      - key: tier
+        operator: In
+        values:
+          - frontend
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+        - name: nginx
+          image:  nginx_local:1.0
+          ports:
+          - containerPort:  80
+            hostPort: 8040
